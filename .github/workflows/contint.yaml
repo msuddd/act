@@ -8,11 +8,17 @@ on:
     branches: 
     - develop 
 jobs:
+  reportdevelopment:
+    if: ${{ github.ref == 'refs/heads/development' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: In development
+        run: echo We are in development
   report:
     runs-on: ubuntu-latest
     steps:
-      - name: Say Hello
-        run: echo Hello
+      - name: Report 
+        run: echo Job starting
 
   ci:
     runs-on: ubuntu-latest
