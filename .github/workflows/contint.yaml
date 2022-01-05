@@ -19,6 +19,10 @@ jobs:
     steps:
       - name: Report 
         run: echo Job starting
+      - name: Report event 
+        run: echo "EVENT $GITHUB_EVENT_NAME"
+      - name: Report branch 
+        run: echo "BRANCH $GITHUB_REF"
 
   ci:
     runs-on: ubuntu-latest
