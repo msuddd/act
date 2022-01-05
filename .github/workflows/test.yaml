@@ -1,0 +1,24 @@
+name: check 
+on: 
+  workflow_dispatch: 
+    branches: 
+    - develop 
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say Hello
+        run: echo Hello
+  check:
+    runs-on: ubuntu-latest
+    needs: report
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.13.8' # The Go version to download (if necessary) and use.
+      - name: Update certs
+        run: apt-get update && apt-get install ca-certificates -y && update-ca-certificates
+      - name: Run Tests 
+        run: go test
+        working-directory: ./noddyApp

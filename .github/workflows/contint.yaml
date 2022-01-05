@@ -1,0 +1,47 @@
+name: ci_workflow 
+on:
+  pull_request:
+    branches:
+      - master
+      - staging 
+  push: 
+    branches: 
+    - develop 
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Say Hello
+        run: echo Hello
+
+  ci:
+    runs-on: ubuntu-latest
+    needs: report
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.13.8' # The Go version to download (if necessary) and use.
+      - name: Update certs
+        run: apt-get update && apt-get install ca-certificates -y && update-ca-certificates
+      - name: Install git
+        run: apt-get install git -y        
+      - name: Install dependencies
+        run: |
+                go version
+                go get -u golang.org/x/lint/golint
+      - name: Build app
+        run: go build main.go
+        working-directory: ./noddyApp
+      - name: Run vet to check correctness 
+        run: go vet .
+        working-directory: ./noddyApp
+      - name: Run lint to check for style issues
+        run: golint .
+        working-directory: ./noddyApp
+  finish:
+    runs-on: ubuntu-latest
+    needs: ci
+    steps:
+      - name: Done
+        run: echo We are done!
